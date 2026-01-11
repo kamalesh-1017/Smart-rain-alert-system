@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Rain Detection Dashboard</title>
+
+  <!-- 🔵 INLINE CSS -->
+  <style>
+    body {
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
+      margin: 0;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.12);
+      padding: 40px;
+      width: 380px;
+      border-radius: 18px;
+      text-align: center;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+      backdrop-filter: blur(10px);
+    }
+
+    h1 {
+      margin-bottom: 5px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+
+    .status {
+      margin: 30px 0;
+      padding: 25px;
+      font-size: 26px;
+      border-radius: 12px;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .rain {
+      background: #ff4c4c;
+    }
+
+    .no-rain {
+      background: #2ecc71;
+    }
+
+    .waiting {
+      background: #f1c40f;
+      color: black;
+    }
+
+    footer {
+      font-size: 12px;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card">
+    <h1>🌧 Rain Detection System</h1>
+    <p class="subtitle">Live Weather Monitoring</p>
+
+    <div id="status" class="status waiting">
+      CONNECTING...
+    </div>
+
+    <footer>Arduino + Python + Web</footer>
+  </div>
+
+  <!-- 🟢 INLINE JAVASCRIPT -->
+  <script>
+    function updateRainStatus() {
+      fetch('/rain')
+        .then(response => response.json())
+        .then(data => {
+          const status = document.getElementById("status");
+
+          if (data.status === "RAIN") {
+            status.innerText = "🌧 RAIN DETECTED";
+            status.className = "status rain";
+          } else if (data.status === "NO_RAIN") {
+            status.innerText = "☀ NO RAIN";
+            status.className = "status no-rain";
+          } else {
+            status.innerText = "⌛ WAITING...";
+            status.className = "status waiting";
+          }
+        })
+        .catch(err => console.error(err));
+    }
+
+    setInterval(updateRainStatus, 1000);
+    updateRainStatus();
+  </script>
+
+</body>
+</html>
